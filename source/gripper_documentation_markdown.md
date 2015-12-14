@@ -1,14 +1,6 @@
 # Tutorial: Interfacing Third Party Grippers with Fetch’s Arm
 
-Fetch offers a modular mobile manipulator platform, capable of completing
-a variety of tasks across complex enviorments. Mechanisms such as those present in grippers are the
- physical basis for how a robot interacts with the world.  Grippers offer different utility based
-  on their governing mechanism allowing a robot to achieve a desired task.  The Fetch gripper is
-   a parallel pincher which offers a wide range of utility, however, there may be instances
-    where a different configuration is desirable.  The following tutorial outlines the 
-  procedure for interfacing different robot grippers creating a procedural approach for 
-  doing this using Fetch’s mechanical, electrical, and software interfaces. After a review
-   of systems two specific examples will be presented.
+Fetch offers a modular mobile manipulator platform, capable of completing a variety of tasks across complex environments. End-effector mechanisms such as grippers are the physical basis for how a robot interacts with the world.  Grippers offer different utility based on their governing kinematic design allowing a robot to achieve a desired task.  The Fetch gripper is a parallel pincher which offers a wide range of utility, however, there may be instances where a different configuration is desirable.  The following tutorial outlines the procedure for interfacing different robot grippers creating a procedural approach for doing this using Fetch’s mechanical, electrical, and software interfaces. After a review of systems two specific examples are presented.
 
 ## Mechanical Gripper Interface of Fetch:
 
@@ -19,10 +11,41 @@ The holes are spaced equally around a 50 mm diameter circle. The bolts should be
  flange’s 6.5 mm high, 63 mm diameter boss can be factored into the tool design. A cable path is provided 
  for optional cable routing.
 
-![alt text](https://github.com/arvinasokan/docs/blob/gripper_documentation/source/_static/Tool%20flange%20spec-01.png "tool flange")
+![alt text](https://github.com/cbuscaron/docs-1/blob/gripper_documentation/source/_static/tool_flange_spec.png "tool flange")
 
 ## Electrical Gripper Interface of Fetch
-Fetch’s Gripper Connector is 6 pin Hirose; Part Number DF11-6DS-2C. Carrying both power and ethernet on the same harness. The Proper mating connector housing is a Hirose DF11- 6DEP-2C.
+Fetch's main electronic board provides a current limited breaker that can supply up to 50 Watts of power at 24 Volts. The gripper breaker can be enable and disable through service calls. Fetch’s Gripper Connector is 6 pin Hirose; Part Number DF11-6DS-2C. Carrying both power and ethernet on the same harness. The proper mating connector housing is a Hirose DF11-6DEP-2C. Modifications can be made to current and voltage requirements to facilitate power changes for an adapted gripper as long as the current running through the internal robot harness does not exceed 2 Amps.
+
+At the robot's base an RJ45 plug contains four wire signals that can be accessed at the gripper connector. See Tables below for pin assignment. 
+
+<center>
+
+| Parameter | Value | Unit |
+|---|---|---|
+|Supply Voltage             | 24  | Volt |
+|Max Rated Current          | 2   | Amps |
+|Supply Capacitance         | 450  | µf |
+|Max Power                  | 96  | Watts | 
+
+</center>
+
+<a href="url"><img src="https://github.com/cbuscaron/docs-1/blob/gripper_integration/source/_static/df11_pin_assigment.png" align="center" height="200" width="300" ></a>
+
+
+
+<center>
+
+| Pin | Signal |
+|---|:---:|---:|
+| 1 | GND |                                           
+| 2 | +24V |
+| 3 | TX+ |
+| 4 | RX+ |
+| 5 | TX- |
+| 6 | RX- |
+
+</center>
+
 
 ## Software Gripper Interface of Fetch
 
@@ -56,9 +79,7 @@ Later in this tutorial two examples will be presented, however, a general proced
 Set up robot controllers.
 7. Generate move it config and collision matrix.
 
-# Robotiq Adaptive Robot Gripper 2-Finger 85 Fetch Integration Documentation
-
-![alt text](https://github.com/arvinasokan/docs/blob/gripper_documentation/source/_static/fetch_robotiq.JPG "fetch_robotiq")
+# Example One: Interfacing Robotiq 85
 
 The robotiq adaptive 85 gripper is a two finger gripper with a different mechanism than the one in the parallel gripper in fetch.
 
@@ -143,124 +164,5 @@ roslaunch robotiq_action_server robotiq_c_model_action_server.launch
 Note: For the robotiq action server to work with the robotiq controller, the controller topics have to be remapped to /gripper/input and /gripper/output, this could be done by launching the controller with the following arguements
 
 rosrun robotiq_c_model_control CModelRtuNode.py “/dev/ttyUSB0” CModelRobotInput:=/gripper/input CModelRobotOutput:=/gripper/output
-
-# Barrett Hand BH-282 Fetch Integration Documentation
-![alt text](https://github.com/arvinasokan/docs/blob/gripper_documentation/source/_static/fetch_barrett.JPG "fetch_barett")
-
-##### Overview
-The Barrett Hand is a three fingered hand from Barrett Technologies.
-The hand uses CAN-BUS or RS-232 for communication, these connectors connect to a
-control box which handles both the power supply and the communications of the hand.
-For this particular setup a USB to CAN adapter is used (Preferably from PEAK)
-
-###### Tried and tested on
-
-Operating System : Linux Ubuntu 14.04.3 LTS
-
-Kernel Version : 3.16.0-45-generic
-
-
-#### Software Setup:
-
-##### Note:
-Before installing the ROS driver, the latest version of the Peak CAN drivers must be installed.
-Please note that for recent kernel versions, only the recent version of the Peak CAN drivers will work properly.
-
-###### Peak CAN drivers and python wrappers installation :
-
-sudo apt-get install swig
-
-###### Installing POPT
-Go to http://www.linuxfromscratch.org/blfs/view/svn/general/popt.html
-
-Download popt-1.16.tar.gz and extract it,
-
-./configure --prefix=/usr --disable-static &&
-make
-
-sudo make install
-
-###### Peak CAN Drivers:
-Go to http://www.peak-system.com/ and download the latest version of the Peak CAN drivers.
-
-once downloaded, extract the package,
-
-make NET=NO_NETDEV_SUPPORT
-
-sudo make install
-
-###### Pcan Python:
-Once the Peak CAN drivers are installed,
-
-git clone https://github.com/RobotnikAutomation/pcan_python.git
-
-make
-
-sudo make install
-
-Add /usr/lib to the PYTHONPATH in order to find the module.
-
-Example: export PYTHONPATH=/usr/lib:$PYTHONPATH
-
-Once all these drivers have been installed without any errors, the ROS drivers/Controller can be used.
-
-###### ROS Driver Installation:
-
-mkdir -p ~/bhand/src
-
-cd bhand/src
-
-catkin_init_workspace
-
-cd ..
-
-catkin_make
-
-cd src
-
-git clone https://github.com/RobotnikAutomation/barrett_hand
-
-cd ..
-
-catkin_make
-
-source devel/setup.bash
-
-Now the ROS drivers have been installed and ready to use
-
-To launch the controller,
-
-roslaunch bhand_controller bhand_controller.launch
-
-The controller will show CAN Error if the CAN drivers have not been installed properly.
-
-To control the barrett hand, through the RQT interface,
-
-rosrun rqt_bhand rqt_bhand
-
-##### List of Topic Published:
-/bhand_node/command
-/bhand_node/state
-/bhand_node/tact_array
-/joint_states
-
-
-# Fetch Moveit Config
-
-The fetch moveit config contains the srdf file which contains the self collision matrix.
-A new set of fetch moveit config can be generated by using the Moveit setup assistant.
-
-A version of moveit setup assistant for the Robotiq adaptive 85 and the Barrett hand can be found at ##some github link##
-
-Moveit setup assistant can be downloaded from the following link
-
-Note: There is an extra controllers.yaml file in the default fetch_moveit config. This file should be modified and included in the newly generated fetch_moveit_config
-
-The gripper action server for robotiq uses GripperCommand messages to the gripper_controller action_ns.
-
-However the barrett hand ros package does not use an action server.
-And so the Barrett Hand can be controlled by sending "sensor_msgs/JointState" to the topic /bhand_node/command
-
-![alt text](https://github.com/arvinasokan/docs/blob/gripper_documentation/source/_static/screenshot.png "fetch_barett_sim")
 
  
