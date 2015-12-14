@@ -90,3 +90,56 @@ Kernel Version : 3.16.0-45-generic
 
 ## Ros Driver Installation ## 
 
+mkdir -p ~/robotiq/src
+
+cd robotiq/src
+
+catkin_init_workspace
+
+cd ..
+
+catkin_make
+
+cd src
+
+git clone https://github.com/ros-industrial/robotiq
+
+Note:The EtherCAT soem library is also required to build the Robotiq package.
+
+sudo apt-get install ros-indigo-soem
+
+cd ..
+
+catkin_make
+
+source devel/setup.bash
+
+Now the ROS drivers have been installed and ready to use
+
+To launch the controller,
+
+rosrun robotiq_c_model_control CModelRtuNode.py “/dev/ttyUSB0” 
+
+This will launch the controller/driver for the gripper.
+
+Note: USB port name may not be the same for all the computers and so to find the name of the usb port,
+
+dmesg | grep tty
+
+This will show the recent connected devices in the USB.
+
+
+To perform a simple open close control manually,
+
+Rosrun robotiq_c_model_control CModelSimpleController.py
+
+this could be used to control the gripper using the keyboard.
+
+To launch the actionserver provided by robotiq,
+
+roslaunch robotiq_action_server robotiq_c_model_action_server.launch
+Note: For the robotiq action server to work with the robotiq controller, the controller topics have to be remapped to /gripper/input and /gripper/output, this could be done by launching the controller with the following arguements
+
+rosrun robotiq_c_model_control CModelRtuNode.py “/dev/ttyUSB0” CModelRobotInput:=/gripper/input CModelRobotOutput:=/gripper/output
+
+ 
