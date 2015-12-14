@@ -56,7 +56,7 @@ Later in this tutorial two examples will be presented, however, a general proced
 Set up robot controllers.
 7. Generate move it config and collision matrix.
 
-# Example One: Interfacing Robotiq 85
+# Robotiq Adaptive Robot Gripper 2-Finger 85 Fetch Integration Documentation
 
 The robotiq adaptive 85 gripper is a two finger gripper with a different mechanism than the one in the parallel gripper in fetch.
 
@@ -142,10 +142,8 @@ Note: For the robotiq action server to work with the robotiq controller, the con
 
 rosrun robotiq_c_model_control CModelRtuNode.py “/dev/ttyUSB0” CModelRobotInput:=/gripper/input CModelRobotOutput:=/gripper/output
 
-
-Barrett Hand :
-
-#### Barrett Hand BH-282 Fetch Integration Documentation
+# Barrett Hand BH-282 Fetch Integration Documentation
+![alt text](https://github.com/arvinasokan/docs/blob/gripper_documentation/source/_static/IMG_3062.JPG "fetch_barett")
 
 ##### Overview
 The Barrett Hand is a three fingered hand from Barrett Technologies.
