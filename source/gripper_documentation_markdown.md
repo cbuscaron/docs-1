@@ -259,5 +259,6 @@ The gripper action server for robotiq uses GripperCommand messages to the grippe
 However the barrett hand ros package does not use an action server.
 And so the Barrett Hand can be controlled by sending "sensor_msgs/JointState" to the topic /bhand_node/command
 
+![alt text](https://github.com/arvinasokan/docs/blob/gripper_documentation/source/_static/screenshot.png "fetch_barett_sim")
 
  
