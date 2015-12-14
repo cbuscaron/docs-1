@@ -1,28 +1,50 @@
 # Tutorial: Interfacing Third Party Grippers with Fetch’s Arm
 
-Fetch offers a modular mobile manipulator platform, capable of completing
-a variety of tasks across complex enviorments. Mechanisms such as those present in grippers are the
- physical basis for how a robot interacts with the world.  Grippers offer different utility based
-  on their governing mechanism allowing a robot to achieve a desired task.  The Fetch gripper is
-   a parallel pincher which offers a wide range of utility, however, there may be instances
-    where a different configuration is desirable.  The following tutorial outlines the 
-  procedure for interfacing different robot grippers creating a procedural approach for 
-  doing this using Fetch’s mechanical, electrical, and software interfaces. After a review
-   of systems two specific examples will be presented.
+Fetch offers a modular mobile manipulator platform, capable of completing a variety of tasks across complex environments. End-effector mechanisms such as grippers are the physical basis for how a robot interacts with the world.  Grippers offer different utility based on their governing kinematic design allowing a robot to achieve a desired task.  The Fetch gripper is a parallel pincher which offers a wide range of utility, however, there may be instances where a different configuration is desirable.  The following tutorial outlines the procedure for interfacing different robot grippers creating a procedural approach for doing this using Fetch’s mechanical, electrical, and software interfaces. After a review of systems two specific examples are presented.
 
 ## Mechanical Gripper Interface of Fetch:
 
-The gripper flange has four M6x1.0 thread holes for attaching a gripper to the robot. 
+The gripper flange has four M6x1.0 thread holes for attaching a gripper to the robot.
 The holes are spaced equally around a 50 mm diameter circle. The bolts should be tightened to 8 N·m,
- making sure there is 8 to 10 mm of threads engaged. For rotational alignment, an optional 6 mm 
- diameter hole is provided for an alignment pin. For accurate centering of mounted tools, the gripper 
- flange’s 6.5 mm high, 63 mm diameter boss can be factored into the tool design. A cable path is provided 
+ making sure there is 8 to 10 mm of threads engaged. For rotational alignment, an optional 6 mm
+ diameter hole is provided for an alignment pin. For accurate centering of mounted tools, the gripper
+ flange’s 6.5 mm high, 63 mm diameter boss can be factored into the tool design. A cable path is provided
  for optional cable routing.
 
-![alt text](https://github.com/arvinasokan/docs/blob/gripper_documentation/source/_static/Tool%20flange%20spec-01.png "tool flange")
+![alt text](https://github.com/cbuscaron/docs-1/blob/gripper_documentation/source/_static/tool_flange_spec.png "tool flange")
 
 ## Electrical Gripper Interface of Fetch
-Fetch’s Gripper Connector is 6 pin Hirose; Part Number DF11-6DS-2C. Carrying both power and ethernet on the same harness. The Proper mating connector housing is a Hirose DF11- 6DEP-2C.
+Fetch's main electronic board provides a current limited breaker that can supply up to 50 Watts of power at 24 Volts. The gripper breaker can be enable and disable through service calls. Fetch’s Gripper Connector is 6 pin Hirose; Part Number DF11-6DS-2C. Carrying both power and ethernet on the same harness. The proper mating connector housing is a Hirose DF11-6DEP-2C. Modifications can be made to current and voltage requirements to facilitate power changes for an adapted gripper as long as the current running through the internal robot harness does not exceed 2 Amps.
+
+At the robot's base an RJ45 plug contains four wire signals that can be accessed at the gripper connector. See Tables below for pin assignment.
+
+<center>
+
+| Parameter | Value | Unit |
+|---|---|---|
+|Supply Voltage             | 24  | Volt |
+|Max Rated Current          | 2   | Amps |
+|Supply Capacitance         | 450  | µf |
+|Max Power                  | 96  | Watts |
+
+</center>
+
+<a href="url"><img src="https://github.com/cbuscaron/docs-1/blob/gripper_integration/source/_static/df11_pin_assigment.png" align="center" height="200" width="300" ></a>
+
+
+<center>
+
+| Pin | Signal |
+|---|:---:|---:|
+| 1 | GND |                                           
+| 2 | +24V |
+| 3 | TX+ |
+| 4 | RX+ |
+| 5 | TX- |
+| 6 | RX- |
+
+</center>
+
 
 ## Software Gripper Interface of Fetch
 
@@ -70,7 +92,7 @@ There are a couple of ways in which this could be dealt with,
 One way is to modify the existing mechanism, by disconnecting some joints and making them fixed, thereby breaking the closed loop chain, however this will restrict the motion of the gripper in certain ways.
 
 Another way to go about it is by coming up with a prismatic setup similar to existing gripper in fetch and cover all the possible collision geometry of the robotiq in the gripper base link.
- 
+
 A similar approach could be used to similar grippers with closed loop kinematic chains.
 
 Next, the robot controllers have to be setup,
@@ -90,7 +112,7 @@ Operating System : Linux Ubuntu 14.04.3 LTS
 
 Kernel Version : 3.16.0-45-generic
 
-## Ros Driver Installation ## 
+## Ros Driver Installation ##
 
 mkdir -p ~/robotiq/src
 
@@ -120,7 +142,7 @@ Now the ROS drivers have been installed and ready to use
 
 To launch the controller,
 
-rosrun robotiq_c_model_control CModelRtuNode.py “/dev/ttyUSB0” 
+rosrun robotiq_c_model_control CModelRtuNode.py “/dev/ttyUSB0”
 
 This will launch the controller/driver for the gripper.
 
@@ -262,5 +284,3 @@ However the barrett hand ros package does not use an action server.
 And so the Barrett Hand can be controlled by sending "sensor_msgs/JointState" to the topic /bhand_node/command
 
 ![alt text](https://github.com/arvinasokan/docs/blob/gripper_documentation/source/_static/screenshot.png "fetch_barett_sim")
-
- 
